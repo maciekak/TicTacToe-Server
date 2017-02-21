@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace TicTacToe_Server
 {
@@ -15,6 +16,12 @@ namespace TicTacToe_Server
 
         public bool Moving(int position, string name)
         {
+            return true; ////
+        }
+
+        public bool TryAdd (string Name, EndPoint EP)
+        {
+            return true; ///
         }
     }
 
