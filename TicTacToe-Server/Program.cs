@@ -10,7 +10,7 @@ namespace TicTacToe_Server
 {
     class Program
     {
-        private Room AddToRoom (List<Room> Rooms, string usrname, EndPoint EP)
+        static private Room AddToRoom (List<Room> Rooms, string usrname, EndPoint EP)
         {
             foreach (Room r in Rooms)
             {
@@ -27,7 +27,7 @@ namespace TicTacToe_Server
             
 
         }
-        void Main(string[] args) //czemu static? na razie usunąlem.  wtedy wszytskie metody do jakich Main się pośr odwołuje musiałyby być static?
+        static void Main(string[] args) //czemu static? na razie usunąlem (jednak nie bo buguje).  wtedy wszytskie metody do jakich Main się pośr odwołuje musiałyby być static? // dobra, chyba zrozumiałem, ale nie wiem czy chyci
         {
             var server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -54,8 +54,9 @@ namespace TicTacToe_Server
                     case "j":
                         EndPoint nrIP = remoteEP;
                        // Room room = ;
-                        users.Add(username, AddToRoom(Rooms, username, nrIP));
+                        users.Add(username, AddToRoom(Rooms, username, nrIP)); //vide 30
                         //users.Add(username, nrIP);
+                        Console.WriteLine("Added user " + username + " from: " + remoteEP.ToString());
                         
 
 
@@ -68,7 +69,7 @@ namespace TicTacToe_Server
 
                         users.Remove(username);
                         // i jeszcze usunięcie ze słownika
-                        
+                        Console.WriteLine("Removed user " + username + " from: " + remoteEP.ToString());
 
                         //Może w ogóle przenieśc Playera do głównego servera, aby był słwnik Player - Room  i do pokoju był wysyłąny gotowy player, do którego móby od razu wysyłąw i ogóle?
                         // .... hm, a może nie
@@ -79,6 +80,7 @@ namespace TicTacToe_Server
                         receiveLength = server.ReceiveFrom(data, ref remoteEP);
                         int position = int.Parse(Encoding.ASCII.GetString(data, 0, receiveLength));
                         users[username].Moving(position, username);
+                        Console.WriteLine("User " + username + " made a move: " + position.ToString());
 
 
                         break;
