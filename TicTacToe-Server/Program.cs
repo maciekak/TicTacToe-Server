@@ -10,18 +10,19 @@ namespace TicTacToe_Server
 {
     class Program
     {
-        private Room AddToRoom (List<Room> Rooms, ref string usrname, EndPoint EP)
+        private Room AddToRoom (List<Room> Rooms, string usrname, EndPoint EP)
         {
             foreach (Room r in Rooms)
             {
-                if (Room.TryAdd(usrname, EP)) //nie czaje chyba tego błędu :<
+                
+                if (r.TryAdd(usrname, EP)) //nie czaje chyba tego błędu :< vide line 30
                 {
                     return r;
                 }
 
             }
             Room extraroom = new Room(); // jakiś sensowny konstrukto by się przydał
-            extraroom.TryAdd(usrname, EP);
+            bool a = extraroom.TryAdd(usrname, EP);
             return extraroom;
             
 
@@ -53,7 +54,7 @@ namespace TicTacToe_Server
                     case "j":
                         EndPoint nrIP = remoteEP;
                        // Room room = ;
-                        users.Add(username, AddToRoom(Rooms, ref username, nrIP));
+                        users.Add(username, AddToRoom(Rooms, username, nrIP));
                         //users.Add(username, nrIP);
                         
 
@@ -62,17 +63,22 @@ namespace TicTacToe_Server
 
                     case "q":
 
+                        //usunięcie z pokoju
+                        users[username].RemPlayer(username);
+
                         users.Remove(username);
+                        // i jeszcze usunięcie ze słownika
+                        
 
                         //Może w ogóle przenieśc Playera do głównego servera, aby był słwnik Player - Room  i do pokoju był wysyłąny gotowy player, do którego móby od razu wysyłąw i ogóle?
-
+                        // .... hm, a może nie
                         break;
 
 
                     case "m": 
                         receiveLength = server.ReceiveFrom(data, ref remoteEP);
                         int position = int.Parse(Encoding.ASCII.GetString(data, 0, receiveLength));
-
+                        users[username].Moving(position, username);
 
 
                         break;

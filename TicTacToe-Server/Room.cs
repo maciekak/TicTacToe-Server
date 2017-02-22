@@ -23,6 +23,10 @@ namespace TicTacToe_Server
         {
             return true; ///
         }
+        public void RemPlayer (string username)
+        {
+
+        }
     }
 
     public enum Result
