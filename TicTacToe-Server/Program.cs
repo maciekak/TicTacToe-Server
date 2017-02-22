@@ -49,7 +49,7 @@ namespace TicTacToe_Server
                 if(!Enum.TryParse(message, out typeOfMessage))
                 {
                     Console.WriteLine("Uncorrect message from client.\nLet's try again");
-                    continue;
+                    continue; //chory pojeb
                 }
 
                 receiveLength = server.ReceiveFrom(data, ref remoteEP);
@@ -71,21 +71,21 @@ namespace TicTacToe_Server
                     case TypeOfMessage.Quit:
 
                         //usunięcie z pokoju
-                        users[username].RemPlayer(username);
-
+                        //users[username].RemPlayer(username);
+                        Rooms.Remove(users[username]);  //vide koment przy metodzie RemPlayer
                         users.Remove(username);
                         // i jeszcze usunięcie ze słownika
                         Console.WriteLine("Removed user " + username + " from: " + remoteEP.ToString());
+                       
+                        
 
-                        //Może w ogóle przenieśc Playera do głównego servera, aby był słwnik Player - Room  i do pokoju był wysyłąny gotowy player, do którego móby od razu wysyłąw i ogóle?
-                        // .... hm, a może nie
                         break;
 
 
                     case TypeOfMessage.Move: 
                         receiveLength = server.ReceiveFrom(data, ref remoteEP);
                         int position = int.Parse(Encoding.ASCII.GetString(data, 0, receiveLength));
-                        users[username].Moving(position, username);
+                        users[username].Moving(position, username, server);
                         Console.WriteLine("User " + username + " made a move: " + position.ToString());
 
 

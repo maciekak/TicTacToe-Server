@@ -12,5 +12,12 @@ namespace TicTacToe_Server
         public string Username { get; set; }
         public EndPoint Address { get; set; }
 
+        public Player (string username, EndPoint adress)
+        {
+            Username = username;
+            Address = adress;
+        }
+
+     
     }
 }

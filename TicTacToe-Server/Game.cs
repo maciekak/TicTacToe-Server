@@ -20,7 +20,7 @@ namespace TicTacToe_Server
         //Maciek
         //Przeprowadza cala gre
         //Zwraca rezultat ostatniego ruchu
-        public Result Move(int position, Field player)
+        public Result Move(int position, Player player) //przekażmy może lepiej całego playera bo by trzeba enuma kopiować
         {
             return Result.Nothing; //TODO: temporary
         }
