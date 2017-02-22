@@ -10,12 +10,24 @@ namespace TicTacToe_Server
     {
         public Field[,] Dashboard { get; set; }
 
+        //Maciek
+        //Inicjalizuje gre
         public Game()
         {
             Dashboard = new Field[3,3];
         }
 
+        //Maciek
+        //Przeprowadza cala gre
+        //Zwraca rezultat ostatniego ruchu
+        public Result Move(int position, Field player)
+        {
+            return Result.Nothing; //TODO: temporary
+        }
+
         //if field equals Empty - nobody won, if field is Player1 - first player won, etc
+        //Maciek
+        //zmienic na bool
         public Field CheckIfSomeoneWon()
         {
             if(CheckIfPlayerWon(Field.Player1))

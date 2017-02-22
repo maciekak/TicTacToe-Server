@@ -10,30 +10,30 @@ namespace TicTacToe_Server
 {
     class Program
     {
-        static private Room AddToRoom (List<Room> Rooms, string usrname, EndPoint EP)
+        private static Room AddToRoom (List<Room> rooms, string usrname, EndPoint EP)
         {
-            foreach (Room r in Rooms)
+            foreach (Room room in rooms)
             {
                 
-                if (r.TryAdd(usrname, EP)) //nie czaje chyba tego błędu :< vide line 30
+                if (room.TryAdd(usrname, EP))
                 {
-                    return r;
+                    return room;
                 }
 
             }
             Room extraroom = new Room(); // jakiś sensowny konstrukto by się przydał
-            bool a = extraroom.TryAdd(usrname, EP);
+            extraroom.TryAdd(usrname, EP);
             return extraroom;
             
 
         }
-        static void Main(string[] args) //czemu static? na razie usunąlem (jednak nie bo buguje).  wtedy wszytskie metody do jakich Main się pośr odwołuje musiałyby być static? // dobra, chyba zrozumiałem, ale nie wiem czy chyci
+        static void Main(string[] args)
         {
             var server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
             server.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1024));
 
-            var remoteEP = new IPEndPoint(IPAddress.Any, 0) as EndPoint; ///Czemu EndPoint a nie IPEndpoint? ma to znacznenie?
+            var remoteEP = new IPEndPoint(IPAddress.Any, 0) as EndPoint;
             
            // Dictionary<string, EndPoint> users = new Dictionary<string, EndPoint>(); //dict usrname - IP vchyba useless, sorki
             Dictionary<string, Room> users = new Dictionary<string, Room>(); // dict usrname - Room os this usr
@@ -45,13 +45,19 @@ namespace TicTacToe_Server
 
                 int receiveLength = server.ReceiveFrom(data, ref remoteEP);
                 string message = Encoding.ASCII.GetString(data, 0, receiveLength);
+                TypeOfMessage typeOfMessage;
+                if(!Enum.TryParse(message, out typeOfMessage))
+                {
+                    Console.WriteLine("Uncorrect message from client.\nLet's try again");
+                    continue;
+                }
 
                 receiveLength = server.ReceiveFrom(data, ref remoteEP);
                 string username = Encoding.ASCII.GetString(data, 0, receiveLength);
 
-                switch (message)
+                switch (typeOfMessage)
                 {
-                    case "j":
+                    case TypeOfMessage.Join:
                         EndPoint nrIP = remoteEP;
                        // Room room = ;
                         users.Add(username, AddToRoom(Rooms, username, nrIP)); //vide 30
@@ -62,7 +68,7 @@ namespace TicTacToe_Server
 
                         break;
 
-                    case "q":
+                    case TypeOfMessage.Quit:
 
                         //usunięcie z pokoju
                         users[username].RemPlayer(username);
@@ -76,7 +82,7 @@ namespace TicTacToe_Server
                         break;
 
 
-                    case "m": 
+                    case TypeOfMessage.Move: 
                         receiveLength = server.ReceiveFrom(data, ref remoteEP);
                         int position = int.Parse(Encoding.ASCII.GetString(data, 0, receiveLength));
                         users[username].Moving(position, username);
@@ -88,5 +94,10 @@ namespace TicTacToe_Server
             }
 
         }
+    }
+
+    public enum TypeOfMessage
+    {
+        Join, Quit, Move
     }
 }
