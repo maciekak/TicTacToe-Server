@@ -23,7 +23,10 @@ namespace TicTacToe_Server
         {
             int index =_players.FindIndex(p => p.Username == name); //OK xDDDDDDDDDD
             Result result = game.Move(position, _players[index]);
-            
+            Byte[] res = Encoding.ASCII.GetBytes(result.ToString());
+            //włąsnie jak robiym z tym wysyłąniem bo w koncu game move chuj wie co zwraca
+            server.SendTo(Encoding.ASCII.GetBytes(res, res.Count(), SocketFlags.None, (EndPoint)remoteEP);
+
             return true; // w sumie czemu to jest boolowe?
         }
 
